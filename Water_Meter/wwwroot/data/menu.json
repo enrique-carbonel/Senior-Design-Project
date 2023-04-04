@@ -1,0 +1,59 @@
+﻿[
+  {
+    "path": "/",
+    "name": "Overview",
+    "key": "overview",
+    "icon": "home",
+    "children": [
+      {
+        "path": "/",
+        "name": "Dashboard",
+        "key": "home.dashboard"
+      }  
+    ]
+  },
+  {
+    "path": "/devices",
+    "name": "Devices",
+    "key": "devices",
+    "icon": "rocket",
+    "children": [
+      {
+        "path": "/devices/devices",
+        "name": "Devices",
+        "key": "devices.devices"
+      }
+    ]
+  },
+  {
+    "path": "/statistics",
+    "name": "Statistics",
+    "key": "statistics",
+    "icon": "area-chart",
+    "children": [
+      {
+        "path": "/statistics/statistics",
+        "name": "Statistics",
+        "key": "statistics.statistics"
+      }
+    ]
+  },
+  {
+    "path": "/account",
+    "name": "Account",
+    "key": "account",
+    "icon": "user",
+    "children": [
+      {
+        "path": "/account/center",
+        "name": "Account Center",
+        "key": "account.center"
+      },
+      {
+        "path": "/account/settings",
+        "name": "Personal settings",
+        "key": "account.settings"
+      }
+    ]
+  }
+]

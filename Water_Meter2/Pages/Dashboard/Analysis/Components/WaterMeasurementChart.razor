@@ -1,0 +1,25 @@
+﻿@namespace Water_Meter2.Pages.Dashboard.Analysis
+@inherits AntDomComponentBase
+
+<Card Title=@("Water Measurement")>
+    <CardTabs>
+        <div class="waterMeasurementChart">
+            <Tabs DefaultActiveKey="1">
+                <ChildContent>
+                    <TabPane Key="1">
+                        <TabTemplate>Week</TabTemplate>
+                        <ChildContent>Content of Tab Pane 1</ChildContent>
+                    </TabPane>
+                    <TabPane Key="2">
+                        <TabTemplate>Month</TabTemplate>
+                        <ChildContent>Content of Tab Pane 2</ChildContent>
+                    </TabPane>
+                    <TabPane Key="3">
+                        <TabTemplate>Year</TabTemplate>
+                        <ChildContent>Content of Tab Pane 3</ChildContent>
+                    </TabPane>
+                </ChildContent>
+            </Tabs>
+        </div>
+    </CardTabs>  
+</Card>

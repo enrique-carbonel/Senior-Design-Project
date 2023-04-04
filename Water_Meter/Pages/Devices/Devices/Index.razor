@@ -1,0 +1,79 @@
+﻿@namespace Water_Meter.Pages.Devices.Devices
+@page "/devices/devices"
+
+<MudText Typo="Typo.h2">Devices</MudText>
+
+<MudMenu Label="Home" Variant="Variant.Filled" EndIcon="@Icons.Filled.KeyboardArrowDown" Color="MudBlazor.Color.Primary" IconColor="MudBlazor.Color.Secondary">
+    <MudMenuItem>Bedroom</MudMenuItem>
+    <MudMenuItem>Kitchen</MudMenuItem>
+    <MudMenuItem>Living Room</MudMenuItem>
+</MudMenu>
+
+<br />
+<br />
+
+<GridContent>
+
+    <AntDesign.Row Type="flex" Gutter="24">
+        
+            
+        
+        <AntDesign.Col  Style="margin-bottom: 12px;">
+            <div>
+                <Button NoSpanWrap="true">
+                    <ChildContent>
+                        <Icon Type="trophy" />
+                        <br />
+                        <p> Sprinkler 1</p>
+                    </ChildContent>
+                </Button>
+            </div>
+        </AntDesign.Col>
+        <AntDesign.Col  Style="margin-bottom: 12px;">
+            <div>
+                <Button NoSpanWrap="true">
+                    <ChildContent>
+                        <Icon Type="trophy" />
+                        <br />
+                        <p> Sprinkler 2</p>
+                    </ChildContent>
+                </Button>
+            </div>
+        </AntDesign.Col>
+        <AntDesign.Col  Style="margin-bottom: 12px;">
+            <div>
+                <Button NoSpanWrap="true">
+                    <ChildContent>
+                        <Icon Type="trophy" />
+                        <br />
+                        <p> Sprinkler 3</p>
+                    </ChildContent>
+                </Button>
+            </div>
+        </AntDesign.Col>
+        <AntDesign.Col  Style="margin-bottom: 12px;">
+            <div>
+                <Button NoSpanWrap="true">
+                    <ChildContent>
+                        <Icon Type="trophy" />
+                        <br />
+                        <p> Sprinkler 4</p>
+                    </ChildContent>
+                </Button>
+            </div>
+        </AntDesign.Col>
+
+    </AntDesign.Row>
+
+</GridContent>
+
+
+
+
+
+
+@code{
+
+}
+
+

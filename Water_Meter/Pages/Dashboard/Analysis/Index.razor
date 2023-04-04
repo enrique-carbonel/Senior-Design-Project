@@ -1,0 +1,88 @@
+@namespace Water_Meter.Pages.Dashboard.Analysis
+@page "/"
+
+@code {
+    private Dictionary<string, string> _gradients = new()
+    {
+        { "0%", "#108ee9" },
+        { "100%", "#87d068" }
+    };
+}
+
+<GridContent>
+    <AntDesign.Row Type="flex" Gutter="24">
+        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="6" Style="margin-bottom: 24px;">
+            <div>
+                <Carousel Autoplay="TimeSpan.FromSeconds(7)">
+                    <CarouselSlick>
+                        <MudCard>
+                            <MudCardMedia Image="assets/sprinkler.jpg" Height="100" />
+                            <MudCardContent>
+                                <MudText Typo="Typo.h4" Style="@($"color:{Colors.Blue.Default};")">Tip</MudText>
+                                <MudText Typo="Typo.h6">Water your lawn only when it needs it</MudText>
+                                <MudText Typo="Typo.body2">Watering on a regular schedule doesn't allow for cool spells or rainfall which reduce the need for watering. Step on some grass. If it springs back up when you move your foot, it doesn't need water.</MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </CarouselSlick>
+                    <CarouselSlick>
+                        <MudCard>
+                            <MudCardMedia  Image="assets/Pool.jpg" Height="100"/>
+                            <MudText Typo="Typo.h4" Style="@($"color:{Colors.Blue.Default};")">Tip</MudText>
+                            <MudText Typo="Typo.h6">Water early in the day</MudText>
+                            <MudText Typo="Typo.body1">Run the sprinkler system during pre-dawn hours for most efficient watering, as the lawn will lose less moisture to evaporation from the sun and heat.</MudText>
+                            <br />
+                            <br />
+                            <br />
+                        </MudCard>
+                    </CarouselSlick>
+                </Carousel>
+            </div>
+
+        </AntDesign.Col>
+        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="6" Style="margin-bottom: 24px;">
+            <ChartCard Title="Estimated Cost"
+                       Total="$250.00"
+                       ContentHeight="46" >
+                <ChildContent>
+                    <MiniArea />
+                </ChildContent>
+                <Footer>
+                    <Field Label="Daily Visits" Value="1243" />
+                </Footer>
+            </ChartCard>
+        </AntDesign.Col>
+        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="6" Style="margin-bottom: 24px;">
+            <ChartCard Title="Payments"
+                       Total="6560"
+                       ContentHeight="46">
+                <ChildContent>
+                    <MiniBar />
+                </ChildContent>
+                <Footer>
+                    <Field Label="Conversion Rate" Value="60%" />
+                </Footer>
+            </ChartCard>
+        </AntDesign.Col>
+        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="6" Style="margin-bottom: 24px;">
+            <ChartCard Title="Measurement Goal"
+                       Total="450/900 gal"
+                       ContentHeight="46">
+                <ChildContent>
+                    <div >
+                        <AntDesign.Progress StrokeColor=_gradients Percent="45.0" Size="@ProgressSize.Small" Status="ProgressStatus.Active" />
+                    </div>
+                    @*<MiniProgress 
+                        Percent="45" 
+                        StrokeWidth="8" 
+                        Target="80"
+                        Color="blue" />*@
+                </ChildContent>
+                <Footer>
+                    <Field Label="Conversion Rate" Value="60%" />
+                </Footer>
+            </ChartCard>
+        </AntDesign.Col>
+    </AntDesign.Row>
+
+    <SalesCard />
+</GridContent>

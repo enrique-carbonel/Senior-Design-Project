@@ -1,0 +1,266 @@
+﻿@namespace Water_Meter.Pages.Statistics.Statistics
+@page "/statistics/statistics"
+@inject HttpClient http
+
+<MudText Typo="Typo.h2">Statistic</MudText>
+<div>
+
+
+<GridContent>
+    <AntDesign.Row Type="flex" Gutter="24">
+        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="6">
+            <div>
+                <Carousel>
+                    <CarouselSlick>
+                        <Card Title=@("Estimate Cost")>
+                            <CardTabs>
+                                <Tabs DefaultActiveKey="1">
+                                    <TabPane Key="1">
+                                        <TabTemplate>Week</TabTemplate>
+                                        <ChildContent>
+                                            <div>
+                                                <h4><b>Weekly estimate cost of Water Consumption (USD)</b></h4>
+                                                <br />
+                                                <AntDesign.Charts.Line Data="WeekDataCost" Config="WeekConfigCost" />
+                                            </div>
+                                        </ChildContent>
+                                    </TabPane>
+                                    <TabPane Key="2">
+                                        <TabTemplate>Month</TabTemplate>
+                                        <ChildContent>
+                                            <div>
+                                                <h4><b>Monthly estimate cost of Water Consumption (USD)</b></h4>
+                                                <br />
+                                                <AntDesign.Charts.Line Data="MonthDataCost" Config="MonthConfigCost" />
+                                            </div>
+                                        </ChildContent>
+                                    </TabPane>
+                                    @*<TabPane Key="3">
+                                    <TabTemplate>Year</TabTemplate>
+                                    <ChildContent>Content of Tab Pane 3</ChildContent>
+                                    </TabPane>*@
+                                </Tabs>
+                            </CardTabs>
+                        </Card>
+                    </CarouselSlick>
+                    <CarouselSlick>
+                        <h3>2</h3>
+                    </CarouselSlick>
+                </Carousel>
+            </div>
+        </AntDesign.Col>
+        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="18">
+            <br />
+            <div>
+                <Card Title=@("Water Consumption")>
+                    <CardTabs>
+                        <Tabs DefaultActiveKey="1">
+                            <TabPane Key="1">
+                                <TabTemplate>Day</TabTemplate>
+                                <ChildContent>
+                                    <div>
+                                        <h4><b>Daily estimate of Water Consumption (L)</b></h4>
+                                        <br />
+                                        <AntDesign.Charts.Line Data="DayDataCons" Config="DayConfigCons" />
+                                    </div>
+                                </ChildContent>
+                            </TabPane>
+                            <TabPane Key="2">
+                                <TabTemplate>Week</TabTemplate>
+                                <ChildContent>
+                                    <div>
+                                        <h4><b>Weekly estimate of Water Consumption (L)</b></h4>
+                                        <br />
+                                        <AntDesign.Charts.Line Data="MonthDataCost" Config="MonthConfigCost" />
+                                    </div>
+                                </ChildContent>
+                            </TabPane>
+                            <TabPane Key="3">
+                                <TabTemplate>Month</TabTemplate>
+                                <ChildContent>
+                                    <h4><b>Monthly estimate of Water Consumption (L)</b></h4>
+                                </ChildContent>
+                            </TabPane>
+                        </Tabs>
+                    </CardTabs>
+                </Card>
+            </div>
+        </AntDesign.Col>
+    </AntDesign.Row>
+
+
+</GridContent>
+
+</div>
+
+@code {
+
+    //End of Card Gutter
+    private RenderFragment coverTemplate =@<img alt="example" src="/assets/warning sign.jpg" />;
+
+  List<Measurement> measurements = new List<Measurement> ();
+  protected override async Task OnInitializedAsync()
+  {
+    measurements = await http.GetFromJsonAsync<List<Measurement>>("measurement/GetMeasurementByDate?StartDate=2022-01-01 10:00&EndDate=2022-01-01 23:00");
+        var x = measurements;
+    }
+    
+    //Weekly Cost
+
+
+    object[] WeekDataCost =
+    {
+        new {year = "Sunday", value = 3},
+        new {year = "Monday", value = 4},
+        new {year = "Tuesday", value = 3.5},
+        new {year = "Wednesday", value = 5},
+        new {year = "Thursday", value = 4.9},
+        new {year = "Friday", value = 6},
+        new {year = "Saturday", value = 7},
+    };
+
+    LineConfig WeekConfigCost = new LineConfig
+        {
+            //Title = new AntDesign.Charts.Title
+            //{
+            //    Visible = true,
+            //    Text = "Weekly Estimate Cost"
+            //},
+            //Description = new Description
+            //{
+            //    Visible = true,
+            //    Text = "Weekly estimate cost of Water Consumption (USD)"
+            //},
+            Padding = "auto",
+            AutoFit = true,
+            XField = "year",
+            YField = "value",
+            Label = new Label
+            {
+                Visible = true,
+                Type = "point"
+            },
+            Point = new LineViewConfigPoint
+            {
+                Visible = true,
+                Size = 5,
+                Shape = "diamond",
+                Style = new GraphicStyle
+                {
+                    Fill = "white",
+                    Stroke = "#2593fc",
+                    LineWidth = 2
+                }
+            }
+        };
+    
+    //End of Weekly Cost
+
+    //Monthly Cost
+
+    object[] MonthDataCost =
+    {
+        new {year = "January", value = 250},
+        new {year = "February", value = 300},
+        new {year = "March", value = 100},
+        new {year = "April", value = 195},
+        new {year = "May", value = 183},
+        new {year = "June", value = 69},
+        new {year = "July", value = 246},
+        new {year = "August", value = 193},
+        new {year = "September", value = 648},
+        new {year = "October", value = 185},
+        new {year = "November", value = 318},
+        new {year = "December", value = 361},
+    };
+
+    LineConfig MonthConfigCost = new LineConfig
+        {
+            //Title = new AntDesign.Charts.Title
+            //{
+            //    Visible = true,
+            //    Text = "Monthly Estimate Cost"
+            //},
+            //Description = new Description
+            //{
+            //    Visible = true,
+            //    Text = "Monthly estimate cost of Water Consumption (USD)"
+            //},
+            Padding = "auto",
+            AutoFit = true,
+            XField = "year",
+            YField = "value",
+            Label = new Label
+            {
+                Visible = true,
+                Type = "point"
+            },
+            Point = new LineViewConfigPoint
+            {
+                Visible = true,
+                Size = 5,
+                Shape = "diamond",
+                Style = new GraphicStyle
+                {
+                    Fill = "white",
+                    Stroke = "#2593fc",
+                    LineWidth = 2
+                }
+            }
+        };
+
+    //End of Monthly Cost
+
+    //Daily Water Consumption
+
+    object[] DayDataCons =
+    {
+        new {year = "00:00", value = 0.50},
+        new {year = "3:00", value = 2.00},
+        new {year = "6:00", value = 3.65},
+        new {year = "9:00", value = 15.59},
+        new {year = "12:00", value = 13.26},
+        new {year = "15:00", value = 29.58},
+        new {year = "18:00", value = 0.59},
+        new {year = "21:00", value = 4.59},
+    };
+
+    LineConfig DayConfigCons = new LineConfig
+        {
+            ////Title = new AntDesign.Charts.Title
+            ////{
+            ////    Visible = true,
+            ////    Text = "Daily Water Consumption"
+            ////},
+             
+            Description = new Description
+            {
+                Visible = true,
+                Text = "Daily estimate of Water Consumption (L)"
+            },
+            
+            Padding = "auto",
+            AutoFit = true,
+            XField = "year",
+            YField = "value",
+            Label = new Label
+            {
+                Visible = true,
+                Type = "point"
+            },
+            Point = new LineViewConfigPoint
+            {
+                Visible = true,
+                Size = 5,
+                Shape = "diamond",
+                Style = new GraphicStyle
+                {
+                    Fill = "white",
+                    Stroke = "#2593fc",
+                    LineWidth = 2
+                }
+            }
+        };
+
+    //End of Daily Water Consumption
+}
