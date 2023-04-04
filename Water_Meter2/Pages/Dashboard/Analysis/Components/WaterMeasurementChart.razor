@@ -5,10 +5,16 @@
     <CardTabs>
         <div class="waterMeasurementChart">
             <Tabs DefaultActiveKey="1">
+                
                 <ChildContent>
                     <TabPane Key="1">
                         <TabTemplate>Week</TabTemplate>
-                        <ChildContent>Content of Tab Pane 1</ChildContent>
+                        <ChildContent>
+                            <DatePicker Id="WeeklyDatePicker" TValue="DateTime?" Picker="@DatePickerType.Week"  />
+                            <br />
+                            Content of Tab Pane 1 <br />
+                            
+                        </ChildContent>
                     </TabPane>
                     <TabPane Key="2">
                         <TabTemplate>Month</TabTemplate>
