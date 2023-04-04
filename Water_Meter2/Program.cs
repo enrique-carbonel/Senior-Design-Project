@@ -8,23 +8,25 @@ using Water_Meter2.Services;
 
 namespace Water_Meter2
 {
-    public class Program
+  public class Program
+  {
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("#app");
+      var builder = WebAssemblyHostBuilder.CreateDefault(args);
+      string baseaddress;
+      builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddAntDesign();
-            builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
-            builder.Services.AddScoped<IChartService, ChartService>();
-            builder.Services.AddScoped<IProjectService, ProjectService>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddScoped<IProfileService, ProfileService>();
+      baseaddress = builder.Configuration["BaseAddressURL"];
+      builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseaddress) });
+      builder.Services.AddAntDesign();
+      builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
+      builder.Services.AddScoped<IChartService, ChartService>();
+      builder.Services.AddScoped<IProjectService, ProjectService>();
+      builder.Services.AddScoped<IUserService, UserService>();
+      builder.Services.AddScoped<IAccountService, AccountService>();
+      builder.Services.AddScoped<IProfileService, ProfileService>();
 
-            await builder.Build().RunAsync();
-        }
+      await builder.Build().RunAsync();
     }
+  }
 }
