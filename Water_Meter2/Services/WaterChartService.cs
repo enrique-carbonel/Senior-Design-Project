@@ -5,46 +5,50 @@ using Water_Meter2.Models;
 
 namespace Water_Meter2.Services
 {
-    public interface IWaterChartService
+  public interface IWaterChartService
+  {
+    Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync();
+    Task<ChartDataItem[]> GetVisitData2Async();
+    Task<ChartDataItem[]> GetSalesDataAsync();
+    Task<RadarDataItem[]> GetRadarDataAsync();
+  }
+
+  public class WaterChartService : IWaterChartService
+  {
+    private readonly HttpClient _httpClient;
+    private readonly HttpClient _waterMeterAPIService;
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public WaterChartService(HttpClient httpClient, IHttpClientFactory httpClientFactory)
     {
-        Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync();
-        Task<ChartDataItem[]> GetVisitData2Async();
-        Task<ChartDataItem[]> GetSalesDataAsync();
-        Task<RadarDataItem[]> GetRadarDataAsync();
+      _httpClient = httpClient;
+      _httpClientFactory = httpClientFactory;
+      _waterMeterAPIService = _httpClientFactory.CreateClient("WaterMeterAPIService");
     }
 
-    public class WaterChartService : IWaterChartService
+    public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync()
     {
-        private readonly HttpClient _httpClient;
-
-        public WaterChartService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
-
-        public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync()
-        {
-            return (await GetChartDataAsync()).VisitData;
-        }
-
-        public async Task<ChartDataItem[]> GetVisitData2Async()
-        {
-            return (await GetChartDataAsync()).VisitData2;
-        }
-
-        public async Task<ChartDataItem[]> GetSalesDataAsync()
-        {
-            return (await GetChartDataAsync()).SalesData;
-        }
-
-        public async Task<RadarDataItem[]> GetRadarDataAsync()
-        {
-            return (await GetChartDataAsync()).RadarData;
-        }
-
-        private async Task<ChartData> GetChartDataAsync()
-        {
-            return await _httpClient.GetFromJsonAsync<ChartData>("data/fake_chart_data.json");
-        }
+      return (await GetChartDataAsync()).VisitData;
     }
+
+    public async Task<ChartDataItem[]> GetVisitData2Async()
+    {
+      return (await GetChartDataAsync()).VisitData2;
+    }
+
+    public async Task<ChartDataItem[]> GetSalesDataAsync()
+    {
+      return (await GetChartDataAsync()).SalesData;
+    }
+
+    public async Task<RadarDataItem[]> GetRadarDataAsync()
+    {
+      return (await GetChartDataAsync()).RadarData;
+    }
+
+    private async Task<ChartData> GetChartDataAsync()
+    {
+      return await _httpClient.GetFromJsonAsync<ChartData>("data/fake_chart_data.json");
+    }
+  }
 }

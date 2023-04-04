@@ -10,10 +10,10 @@
                     <TabPane Key="1">
                         <TabTemplate>Week</TabTemplate>
                         <ChildContent>
-                            <DatePicker Id="WeeklyDatePicker" TValue="DateTime?" Picker="@DatePickerType.Week"  />
+                            <DatePicker @bind="SelectedWeek" Id="WeeklyDatePicker" TValue="DateTime?" Picker="@DatePickerType.Week" OnChange="SetCurrentWeek"  />
                             <br />
                             Content of Tab Pane 1 <br />
-                            
+                            @CurrentWeek
                         </ChildContent>
                     </TabPane>
                     <TabPane Key="2">
