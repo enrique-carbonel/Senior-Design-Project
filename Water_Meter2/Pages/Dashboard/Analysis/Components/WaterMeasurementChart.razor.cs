@@ -1,4 +1,5 @@
-﻿using AntDesign.Charts;
+﻿using AntDesign;
+using AntDesign.Charts;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Runtime.CompilerServices;
@@ -8,18 +9,22 @@ using Water_Meter2.Services;
 namespace Water_Meter2.Pages.Dashboard.Analysis
 {
   public partial class WaterMeasurementChart
-  {
-    DateTime CurrentWeek;
-    DateTime SelectedWeek;
+  {  
+    DateTime StartDate;
+    DateTime EndDate;  
 
     public WaterMeasurementChart()
-    {
-      CurrentWeek = DateTime.Now;
+    {      
     }
-
-    public void SetCurrentWeek()
-    {
-      CurrentWeek = SelectedWeek;
+    
+    public void GetWeeklyData(DateTimeChangedEventArgs e)
+    {  
+      StartDate = e.Date;
+      if (e.Date.DayOfWeek != DayOfWeek.Sunday)
+      {
+        StartDate = StartDate.AddDays(((int)e.Date.DayOfWeek) * -1);
+      }
+      EndDate = StartDate.AddDays(6);            
     }
   }
 }
