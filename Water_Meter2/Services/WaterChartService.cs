@@ -1,4 +1,8 @@
-﻿using System.Net.Http;
+﻿using AntDesign;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Water_Meter2.Models;
@@ -7,7 +11,7 @@ namespace Water_Meter2.Services
 {
   public interface IWaterChartService
   {
-    Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync();
+    Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate , DateTime EndDate );
     Task<ChartDataItem[]> GetVisitData2Async();
     Task<ChartDataItem[]> GetSalesDataAsync();
     Task<RadarDataItem[]> GetRadarDataAsync();
@@ -26,9 +30,26 @@ namespace Water_Meter2.Services
       _waterMeterAPIService = _httpClientFactory.CreateClient("WaterMeterAPIService");
     }
 
-    public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync()
+    public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate, DateTime EndDate)
     {
-      return (await GetChartDataAsync()).VisitData;
+      String Uri;
+      List<Measurement> measurements = new List<Measurement>();
+      ChartDataItem[] data;
+
+      if (StartDate == DateTime.MinValue || EndDate == DateTime.MinValue) 
+      {
+        return (await GetChartDataAsync()).VisitData2;
+      }
+      //Uri = "/Measurement/GetMeasurementByDate?StartDate={}&EndDate={}";
+      //Uri = "/Measurement/GetMeasurementByDate?StartDate=" + StartDate.ToString("yyyy/MM/dd");
+      //Uri += "&EndDate=" + EndDate.ToString("yyyy/MM/dd");
+      Uri = $"/Measurement/GetMeasurementByDate?StartDate={StartDate:yyyy/MM/dd}&EndDate={EndDate:yyyy/MM/dd}";
+      //Fecha en AAAA/MM/DD
+      measurements = await _waterMeterAPIService.GetFromJsonAsync<List<Measurement>> (Uri);
+      data = measurements.GroupBy(m => m.TimeStamp.Date)
+                         .Select(g => new ChartDataItem { X = g.Key.DayOfWeek.ToString(), Y = (int)g.Sum(m => m.Liters)})
+                         .ToArray();
+      return (data);
     }
 
     public async Task<ChartDataItem[]> GetVisitData2Async()
