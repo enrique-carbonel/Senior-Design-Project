@@ -3,15 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Web;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Water_Meter2.Models;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace Water_Meter2.Services
 {
   public interface IWaterChartService
   {
-    Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate , DateTime EndDate );
+    Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate);
     Task<ChartDataItem[]> GetVisitData2Async();
     Task<ChartDataItem[]> GetSalesDataAsync();
     Task<RadarDataItem[]> GetRadarDataAsync();
@@ -22,30 +25,46 @@ namespace Water_Meter2.Services
     private readonly HttpClient _httpClient;
     private readonly HttpClient _waterMeterAPIService;
     private readonly IHttpClientFactory _httpClientFactory;
+    private JsonSerializerOptions _jsonSerializerOptions;
 
     public WaterChartService(HttpClient httpClient, IHttpClientFactory httpClientFactory)
     {
       _httpClient = httpClient;
       _httpClientFactory = httpClientFactory;
       _waterMeterAPIService = _httpClientFactory.CreateClient("WaterMeterAPIService");
+      _jsonSerializerOptions = new JsonSerializerOptions();
+      _jsonSerializerOptions.PropertyNameCaseInsensitive = true;
+      _jsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     }
 
-    public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate, DateTime EndDate)
+    public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate)
     {
       String Uri;
       List<Measurement> measurements = new List<Measurement>();
       ChartDataItem[] data;
+      DateTime EndDate;
 
-      if (StartDate == DateTime.MinValue || EndDate == DateTime.MinValue) 
+      if (StartDate == DateTime.MinValue) 
       {
-        return (await GetChartDataAsync()).VisitData2;
+       StartDate = DateTime.Now;
       }
-      //Uri = "/Measurement/GetMeasurementByDate?StartDate={}&EndDate={}";
-      //Uri = "/Measurement/GetMeasurementByDate?StartDate=" + StartDate.ToString("yyyy/MM/dd");
-      //Uri += "&EndDate=" + EndDate.ToString("yyyy/MM/dd");
-      Uri = $"/Measurement/GetMeasurementByDate?StartDate={StartDate:yyyy/MM/dd}&EndDate={EndDate:yyyy/MM/dd}";
-      //Fecha en AAAA/MM/DD
-      measurements = await _waterMeterAPIService.GetFromJsonAsync<List<Measurement>> (Uri);
+      if (StartDate.DayOfWeek != DayOfWeek.Sunday)
+      {
+        StartDate = StartDate.AddDays(((int)StartDate.DayOfWeek) * -1);
+      }
+      EndDate = StartDate.AddDays(6);      
+      Uri = $"/Measurement/GetMeasurementByDate?StartDate={StartDate:yyyy-MM-dd}&EndDate={EndDate:yyyy-MM-dd}";
+      //Fecha en yyyy-MM-dd
+      try
+      {
+        measurements = await _waterMeterAPIService.GetFromJsonAsync<List<Measurement>>(Uri,_jsonSerializerOptions);
+      }
+      catch (Exception ex)
+      {
+        var message = ex.Message;
+      }
+      
+      
       data = measurements.GroupBy(m => m.TimeStamp.Date)
                          .Select(g => new ChartDataItem { X = g.Key.DayOfWeek.ToString(), Y = (int)g.Sum(m => m.Liters)})
                          .ToArray();

@@ -48,6 +48,8 @@ if (app.Environment.IsDevelopment() || true)
   app.UseSwaggerUI();
 }
 
+app.UseCors();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

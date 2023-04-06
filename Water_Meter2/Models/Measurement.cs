@@ -8,6 +8,5 @@ namespace Water_Meter2.Models
     public DateTime TimeStamp { get; set; }
     public double Liters { get; set; }
     public int DeviceId { get; set; }
-
   }
 }
