@@ -14,7 +14,7 @@ namespace Water_Meter2.Services
 {
   public interface IWaterChartService
   {
-    Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate);
+    Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate, DateTime EndDate);
     Task<ChartDataItem[]> GetVisitData2Async();
     Task<ChartDataItem[]> GetSalesDataAsync();
     Task<RadarDataItem[]> GetRadarDataAsync();
@@ -37,22 +37,12 @@ namespace Water_Meter2.Services
       _jsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     }
 
-    public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate)
+    public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate, DateTime EndDate)
     {
       String Uri;
       List<Measurement> measurements = new List<Measurement>();
-      ChartDataItem[] data;
-      DateTime EndDate;
-
-      if (StartDate == DateTime.MinValue) 
-      {
-       StartDate = DateTime.Now;
-      }
-      if (StartDate.DayOfWeek != DayOfWeek.Sunday)
-      {
-        StartDate = StartDate.AddDays(((int)StartDate.DayOfWeek) * -1);
-      }
-      EndDate = StartDate.AddDays(6);      
+      ChartDataItem[] data;      
+          
       Uri = $"/Measurement/GetMeasurementByDate?StartDate={StartDate:yyyy-MM-dd}&EndDate={EndDate:yyyy-MM-dd}";
       //Fecha en yyyy-MM-dd
       try
@@ -68,6 +58,15 @@ namespace Water_Meter2.Services
       data = measurements.GroupBy(m => m.TimeStamp.Date)
                          .Select(g => new ChartDataItem { X = g.Key.DayOfWeek.ToString(), Y = (int)g.Sum(m => m.Liters)})
                          .ToArray();
+
+      if (data.Length == 0)
+      {
+
+        for (DateTime date = StartDate; date <= EndDate; date = date.AddDays(1)) 
+        { 
+          data = data.Append(new ChartDataItem { X = date.DayOfWeek.ToString(), Y = 0 });
+        }
+      }
       return (data);
     }
 

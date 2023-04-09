@@ -15,6 +15,12 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
     DateTime StartDate;
     DateTime EndDate;
     ChartDataItem[] Weeklydata;
+    enum DateRangeType
+    {
+      Daily,
+      Weekly,
+      Monthly
+    }
 
     private readonly ColumnConfig _WaterChartConfig = new ColumnConfig
     {
@@ -34,15 +40,13 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
     [Inject]
     public IWaterChartService WaterChartService { get; set; }
 
-
-
-    public async void GetWeeklyData(DateTimeChangedEventArgs e)
+    public async Task GetWeeklyData(DateTimeChangedEventArgs e)
     {
       StartDate = e.Date;
-      Weeklydata = await WaterChartService.GetWeeklyMeasurementDataAsync(StartDate);
+      GetDateRange(DateRangeType.Weekly);
+      Weeklydata = await WaterChartService.GetWeeklyMeasurementDataAsync(StartDate, EndDate);
       await _waterChart.ChangeData(Weeklydata);
     }
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,9 +56,36 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
 
     private async Task OnTabChanged(string activeKey)
     {
-      Weeklydata = await WaterChartService.GetWeeklyMeasurementDataAsync(StartDate);
       if (activeKey == "1")
-        await _waterChart.ChangeData(Weeklydata);
+      {
+        await GetWeeklyData(new DateTimeChangedEventArgs());
+      }
+
+    }
+
+    private void GetDateRange(DateRangeType rangeType)
+    {
+
+      switch (rangeType)
+      {
+        case DateRangeType.Daily:
+          break;
+        case DateRangeType.Weekly:
+          if (StartDate == DateTime.MinValue)
+          {
+            StartDate = DateTime.Now;
+          }
+          if (StartDate.DayOfWeek != DayOfWeek.Sunday)
+          {
+            StartDate = StartDate.AddDays(((int)StartDate.DayOfWeek) * -1);
+          }
+          EndDate = StartDate.AddDays(6);
+          break;
+        case DateRangeType.Monthly:
+          break;
+        default:
+          break;
+      }
     }
   }
 }
