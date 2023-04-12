@@ -2,6 +2,7 @@
 @page "/"
 
 <GridContent>
+  <CascadingValue Value="@Year">
     <Row Type="flex" Gutter="24">
         @*<AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="6" Style="margin-bottom: 24px;">*@
             @*<ChartCard Title="Total Sales"
@@ -64,6 +65,22 @@
             </ChartCard>
         </AntDesign.Col>*@
     </Row>
-
-    <WaterMeasurementChart />
+    <WaterMeasurementChart OnChangeYear="OnChangeYear" />
+  </CascadingValue>
 </GridContent>
+@code
+{
+  int Year;
+
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    Year = DateTime.Now.Year;
+
+  }
+
+  void OnChangeYear(int year)
+  {
+    Year = year;
+  }
+}

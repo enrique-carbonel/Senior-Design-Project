@@ -104,7 +104,7 @@ namespace Water_Meter_Model
             modelBuilder.Entity<Measurement>().ToTable(@"Measurements", @"dbo");
             modelBuilder.Entity<Measurement>().Property(x => x.Id).HasColumnName(@"Id").IsRequired().ValueGeneratedOnAdd();
             modelBuilder.Entity<Measurement>().Property(x => x.TimeStamp).HasColumnName(@"TimeStamp").HasColumnType(@"datetime").IsRequired().ValueGeneratedNever();
-            modelBuilder.Entity<Measurement>().Property(x => x.Liters).HasColumnName(@"Liters").HasColumnType(@"numeric(7,3)").IsRequired().ValueGeneratedNever().HasPrecision(7, 3);
+            modelBuilder.Entity<Measurement>().Property(x => x.Liters).HasColumnName(@"Liters").HasColumnType(@"numeric(8,3)").IsRequired().ValueGeneratedNever().HasPrecision(7, 3);
             modelBuilder.Entity<Measurement>().Property(x => x.DeviceId).HasColumnName(@"DeviceId").HasColumnType(@"int").IsRequired().ValueGeneratedNever().HasPrecision(10, 0);
             modelBuilder.Entity<Measurement>().HasKey(@"Id");
         }

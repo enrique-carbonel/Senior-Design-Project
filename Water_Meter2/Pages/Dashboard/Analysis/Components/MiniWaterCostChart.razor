@@ -1,12 +1,24 @@
 @using Water_Meter2.Services
 @namespace Water_Meter2.Pages.Dashboard.Analysis
 @inject IChartService ChartService
+
 <AntDesign.Charts.Column @ref="_costchart" Config="_chartConfig" />
+Year = @Year
 
 @code
 {
-    private IChartComponent _costchart;
-    private ColumnConfig _chartConfig = new ColumnConfig
+  [CascadingParameter]
+  protected int Year { get; set; }
+
+  DateTime StartDate;
+  DateTime EndDate;  
+  ChartDataItem[] Monthlydata;
+
+  [Inject]
+  public IWaterChartService WaterChartService { get; set; }
+
+  private IChartComponent _costchart;
+  private ColumnConfig _chartConfig = new ColumnConfig
     {
         XField = "x",
         YField = "y",
@@ -23,10 +35,14 @@
         }
     };
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        var data = await ChartService.GetVisitDataAsync();
-        await _costchart.ChangeData(data);
-    }
+  
+  protected override async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    StartDate = new DateTime(Year, 1, 1);
+    EndDate = new DateTime(Year, 12, 31);
+    Monthlydata = await WaterChartService.GetMonthlyCostDataAsync(StartDate, EndDate);
+    await _costchart.ChangeData(Monthlydata);
+  }
+
 }

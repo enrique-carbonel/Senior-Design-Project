@@ -23,6 +23,9 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
       Monthly
     }
 
+    [Parameter]
+    public EventCallback<int> OnChangeYear { get; set; }
+
     private readonly ColumnConfig _WaterChartConfig = new ColumnConfig
     {
       Title = new AntDesign.Charts.Title
@@ -51,10 +54,12 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
 
     public async Task GetMonthlyData(DateTimeChangedEventArgs e)
     {
-            StartDate = e.Date;
-            GetDateRange(DateRangeType.Monthly);
-            Monthlydata = await WaterChartService.GetMonthlyMeasurementDataAsync(StartDate, EndDate);
-            await _waterChart.ChangeData(Monthlydata);
+      StartDate = e.Date;
+      GetDateRange(DateRangeType.Monthly);
+      Monthlydata = await WaterChartService.GetMonthlyMeasurementDataAsync(StartDate, EndDate);
+      await _waterChart.ChangeData(Monthlydata);
+      await OnChangeYear.InvokeAsync(StartDate.Year);
+
     }
 
     protected override async Task OnInitializedAsync()
@@ -76,9 +81,7 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
 
     }
 
-       
-
-        private void GetDateRange(DateRangeType rangeType)
+    private void GetDateRange(DateRangeType rangeType)
     {
 
       switch (rangeType)
@@ -97,17 +100,18 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
           EndDate = StartDate.AddDays(6);
           break;
         case DateRangeType.Monthly:
-                    if(StartDate == DateTime.MinValue)
-                    {
-                        StartDate = DateTime.Now;
-                    }
-                    StartDate = new DateTime(StartDate.Year, 1, 1);
-                    EndDate = new DateTime(StartDate.Year, 12, 31);
-                    
+          if (StartDate == DateTime.MinValue)
+          {
+            StartDate = DateTime.Now;
+          }
+          StartDate = new DateTime(StartDate.Year, 1, 1);
+          EndDate = new DateTime(StartDate.Year, 12, 31);
+
           break;
         default:
           break;
       }
     }
+    
   }
 }
