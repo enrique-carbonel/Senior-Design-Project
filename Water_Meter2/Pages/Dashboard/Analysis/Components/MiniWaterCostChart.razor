@@ -1,0 +1,32 @@
+@using Water_Meter2.Services
+@namespace Water_Meter2.Pages.Dashboard.Analysis
+@inject IChartService ChartService
+<AntDesign.Charts.Column @ref="_costchart" Config="_chartConfig" />
+
+@code
+{
+    private IChartComponent _costchart;
+    private ColumnConfig _chartConfig = new ColumnConfig
+    {
+        XField = "x",
+        YField = "y",
+        Height = 45,
+        Padding = new[] { 8, 8, 8, 8 },
+        ForceFit = true,
+        XAxis = new CatAxis
+        {
+            Visible = false
+        },
+        YAxis = new ValueAxis
+        {
+            Visible = false
+        }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var data = await ChartService.GetVisitDataAsync();
+        await _costchart.ChangeData(data);
+    }
+}

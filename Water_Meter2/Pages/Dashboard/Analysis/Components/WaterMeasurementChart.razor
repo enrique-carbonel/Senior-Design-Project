@@ -20,7 +20,15 @@
                     </TabPane>
                     <TabPane Key="2">
                         <TabTemplate>Month</TabTemplate>
-                        <ChildContent>Content of Tab Pane 2</ChildContent>
+                        <ChildContent>
+                            <DatePicker TValue="DateTime?" Picker="@DatePickerType.Year" OnChange="GetMonthlyData" />
+                            <br />
+                            Content of Tab Pane 2 <br />
+                            @StartDate -- @EndDate
+                            <br />
+                            <AntDesign.Charts.Column @ref="_waterChart" Config="_WaterChartConfig" />
+                            
+                        </ChildContent>
                     </TabPane>
                     <TabPane Key="3">
                         <TabTemplate>Year</TabTemplate>

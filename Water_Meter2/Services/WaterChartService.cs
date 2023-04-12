@@ -15,6 +15,7 @@ namespace Water_Meter2.Services
   public interface IWaterChartService
   {
     Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate, DateTime EndDate);
+    Task<ChartDataItem[]> GetMonthlyMeasurementDataAsync(DateTime StartDate, DateTime EndDate);
     Task<ChartDataItem[]> GetVisitData2Async();
     Task<ChartDataItem[]> GetSalesDataAsync();
     Task<RadarDataItem[]> GetRadarDataAsync();
@@ -56,7 +57,7 @@ namespace Water_Meter2.Services
       
       
       data = measurements.GroupBy(m => m.TimeStamp.Date)
-                         .Select(g => new ChartDataItem { X = g.Key.DayOfWeek.ToString(), Y = (int)g.Sum(m => m.Liters)})
+                         .Select(g => new ChartDataItem { X = g.Key.DayOfWeek.ToString(), Y = (int) Math.Round(g.Average(m => m.Liters))})
                          .ToArray();
 
       if (data.Length == 0)
@@ -69,6 +70,49 @@ namespace Water_Meter2.Services
       }
       return (data);
     }
+
+    public async Task<ChartDataItem[]> GetMonthlyMeasurementDataAsync(DateTime StartDate, DateTime EndDate)
+    {
+      String Uri;
+      List<Measurement> measurements = new List<Measurement>();
+      ChartDataItem[] data;      
+          
+      Uri = $"/Measurement/GetMeasurementByDate?StartDate={StartDate:yyyy-MM-dd}&EndDate={EndDate:yyyy-MM-dd}";
+      //Fecha en yyyy-MM-dd
+      try
+      {
+        measurements = await _waterMeterAPIService.GetFromJsonAsync<List<Measurement>>(Uri,_jsonSerializerOptions);
+      }
+      catch (Exception ex)
+      {
+        var message = ex.Message;
+      }
+      
+      
+      data = measurements.GroupBy(m => m.TimeStamp.Month)
+                         .Select(g => new ChartDataItem { X = (new DateTime(2023, g.Key, 1).ToString("MMM")), Y = (int) Math.Round(g.Average(m => m.Liters),0)})
+                         .ToArray();
+
+      if (data.Length == 0)
+      {
+
+        for (DateTime date = StartDate; date <= EndDate; date = date.AddMonths(1)) 
+        { 
+          data = data.Append(new ChartDataItem { X = date.ToString("MMM"), Y = 0 });
+        }
+      }
+      return (data);
+    }
+
+
+
+
+
+
+
+
+
+
 
     public async Task<ChartDataItem[]> GetVisitData2Async()
     {

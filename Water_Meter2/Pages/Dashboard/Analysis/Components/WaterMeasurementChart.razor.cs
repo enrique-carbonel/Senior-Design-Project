@@ -15,6 +15,7 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
     DateTime StartDate;
     DateTime EndDate;
     ChartDataItem[] Weeklydata;
+    ChartDataItem[] Monthlydata;
     enum DateRangeType
     {
       Daily,
@@ -48,6 +49,14 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
       await _waterChart.ChangeData(Weeklydata);
     }
 
+    public async Task GetMonthlyData(DateTimeChangedEventArgs e)
+    {
+            StartDate = e.Date;
+            GetDateRange(DateRangeType.Monthly);
+            Monthlydata = await WaterChartService.GetMonthlyMeasurementDataAsync(StartDate, EndDate);
+            await _waterChart.ChangeData(Monthlydata);
+    }
+
     protected override async Task OnInitializedAsync()
     {
       await base.OnInitializedAsync();
@@ -60,10 +69,16 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
       {
         await GetWeeklyData(new DateTimeChangedEventArgs());
       }
+      else if (activeKey == "2")
+      {
+        await GetMonthlyData(new DateTimeChangedEventArgs());
+      }
 
     }
 
-    private void GetDateRange(DateRangeType rangeType)
+       
+
+        private void GetDateRange(DateRangeType rangeType)
     {
 
       switch (rangeType)
@@ -82,6 +97,13 @@ namespace Water_Meter2.Pages.Dashboard.Analysis
           EndDate = StartDate.AddDays(6);
           break;
         case DateRangeType.Monthly:
+                    if(StartDate == DateTime.MinValue)
+                    {
+                        StartDate = DateTime.Now;
+                    }
+                    StartDate = new DateTime(StartDate.Year, 1, 1);
+                    EndDate = new DateTime(StartDate.Year, 12, 31);
+                    
           break;
         default:
           break;
