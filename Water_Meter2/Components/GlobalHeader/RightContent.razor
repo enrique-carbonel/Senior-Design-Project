@@ -2,13 +2,13 @@
 @inherits AntDomComponentBase
 
 <Space Class="@ClassMapper.Class" Size="@("24")">
-    <SpaceItem>
+    @*<SpaceItem>
         <HeaderSearch Class="action search"
                       Placeholder="Site Search"
                       DefaultValue="umi ui"
                       Options="DefaultOptions" />
-    </SpaceItem>
-    <SpaceItem>
+    </SpaceItem>*@
+    @*<SpaceItem>
         <AntDesign.Tooltip Title="@("Help")" Placement="@Placement.Bottom">
             <Unbound>
                 <span @ref="@context.Current" class="action">
@@ -16,9 +16,9 @@
                 </span>
             </Unbound>
         </AntDesign.Tooltip>
-    </SpaceItem>
+    </SpaceItem>*@
     <SpaceItem>
-        <NoticeIcon ClearText="Empty"
+        @*<NoticeIcon ClearText="Empty"
                     ViewMoreText="see more"
                     Count="_count"
                     OnClear="HandleClear"
@@ -38,7 +38,7 @@
                         EmptyText="You have completed all to do"
                         ShowViewMore
                         Data="_events" />
-        </NoticeIcon>
+        </NoticeIcon>*@
     </SpaceItem>
     <SpaceItem>
         <AvatarDropdown Name="@_currentUser.Name"
@@ -46,7 +46,7 @@
                         MenuItems="@AvatarMenuItems"
                         OnItemSelected="HandleSelectUser" />
     </SpaceItem>
-    <SpaceItem>
+    @*<SpaceItem>
         <SelectLang OnItemSelected="HandleSelectLang" />
-    </SpaceItem>
+    </SpaceItem>*@
 </Space>

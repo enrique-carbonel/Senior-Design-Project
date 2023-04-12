@@ -38,10 +38,10 @@ namespace Water_Meter2.Components
 
         public AvatarMenuItem[] AvatarMenuItems { get; set; } = new AvatarMenuItem[]
         {
-            new() { Key = "center", IconType = "user", Option = "个人中心"},
-            new() { Key = "setting", IconType = "setting", Option = "个人设置"},
+            new() { Key = "center", IconType = "user", Option = "Personal Center"},
+            new() { Key = "setting", IconType = "setting", Option = "Personal Settings"},
             new() { IsDivider = true },
-            new() { Key = "logout", IconType = "logout", Option = "退出登录"}
+            new() { Key = "logout", IconType = "logout", Option = "Signout"}
         };
 
         [Inject] protected NavigationManager NavigationManager { get; set; }
@@ -103,7 +103,7 @@ namespace Water_Meter2.Components
                     _events = new NoticeIconData[] { };
                     break;
             }
-            await MessageService.Success($"清空了{key}");
+            await MessageService.Success($"Emptied{key}");
         }
 
         public async Task HandleViewMore(string key)

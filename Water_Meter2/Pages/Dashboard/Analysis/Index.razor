@@ -4,40 +4,35 @@
 <GridContent>
   <CascadingValue Value="@Year">
     <Row Type="flex" Gutter="24">
-        @*<AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="6" Style="margin-bottom: 24px;">*@
-            @*<ChartCard Title="Total Sales"
-                       Total="$ 126,560"
-                       ContentHeight="46">
+        <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
+            <ChartCard Title="Tips to Save Water"
+                       ContentHeight="70">
                 <ChildContent>
-                    <Trend Flag="up">
-                        WoW Change
-                        <span class="trendText">12%</span>
-                    </Trend>
-                    <Trend Flag="down">
-                        DoD Change
-                        <span class="trendText">11%</span>
-                    </Trend>
+                        <div>
+                            <Carousel Autoplay="TimeSpan.FromSeconds(10)">
+                                <CarouselSlick>
+                                    <h3>Water in the morning. Between dawn and mid morning is best, 
+                                        as the sun and wind will be lower, decreasing loss of water to evaporation.</h3>
+                                </CarouselSlick>
+                                <CarouselSlick>
+                                    <h3>In order to meet the very different watering needs each of your landscape elements,
+                                        divide your landscape into watering zones.</h3>
+                                </CarouselSlick>
+                                <CarouselSlick>
+                                    <h3>Water more frequently but in shorter bursts. For example, 
+                                        instead of one long watering session, 
+                                        try several short sessions timed about 15 minutes apart.</h3>
+                                </CarouselSlick>
+                                <CarouselSlick>
+                                    <h3>Don’t Water In The Rain</h3>
+                                </CarouselSlick>
+                            </Carousel>
+                        </div>
                 </ChildContent>
-                <Footer>
-                    <Field Label="Daily Sale" Value="$12,423" />
-                </Footer>
-            </ChartCard>*@
-        @*</AntDesign.Col>*@
-        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="12" Style="margin-bottom: 24px;">
-            <ChartCard Title="Water Consumption"
-                       Total="8846"
-                       ContentHeight="46">
-                <ChildContent>
-                    <MiniArea />
-                </ChildContent>
-                <Footer>
-                    <Field Label="Measurement" Value="Liters" />
-                </Footer>
             </ChartCard>
         </AntDesign.Col>
-        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="12" Style="margin-bottom: 24px;">
+        <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
             <ChartCard Title="Total Cost"
-                       Total="6560"
                        ContentHeight="46">
                 <ChildContent>
                     <MiniWaterCostChart />
@@ -48,9 +43,8 @@
                 </Footer>
             </ChartCard>
         </AntDesign.Col>
-        @*<AntDesign.Col Xs="24" Sm="24" Md="24" Lg="24" Xl="8" Style="margin-bottom: 24px;">
-            <ChartCard Title="Operational Effect"
-                       Total="78%"
+        <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
+            <ChartCard Title="Leakage Detector"
                        ContentHeight="46">
                 <ChildContent>
                     <MiniProgress 
@@ -60,16 +54,28 @@
                         Color="#13C2C2" />
                 </ChildContent>
                 <Footer>
-                    <Field Label="Conversion Rate" Value="60%" />
+                    <Field Label="Will detect if there is Leakage based on ____"/>
                 </Footer>
             </ChartCard>
-        </AntDesign.Col>*@
+        </AntDesign.Col>
     </Row>
     <WaterMeasurementChart OnChangeYear="OnChangeYear" />
   </CascadingValue>
 </GridContent>
+
+<style>
+    .ant-carousel .slick-slide {
+        text-align: center;
+        
+    }
+
+        .ant-carousel .slick-slide h3 {
+            color: black;
+        }
+</style>
 @code
 {
+  private string _position = CarouselDotPosition.Bottom;
   int Year;
 
   protected override async Task OnInitializedAsync()

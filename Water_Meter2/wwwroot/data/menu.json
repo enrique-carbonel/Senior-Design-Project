@@ -1,9 +1,9 @@
 ﻿[
   {
-    "path": "/dashboard",
-    "name": "Dashboard",
-    "key": "dashboard",
     "icon": "dashboard",
+    "key": "dashboard",
+    "name": "Dashboard",
+    "path": "/dashboard",
     "children": [
       {
         "path": "/",

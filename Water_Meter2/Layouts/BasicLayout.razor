@@ -1,9 +1,8 @@
 ﻿@namespace Water_Meter2
 @inherits LayoutComponentBase
 
-<AntDesign.ProLayout.BasicLayout 
-    Logo="@("https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg")"
-    MenuData="_menuData">
+<AntDesign.ProLayout.BasicLayout Logo="@("assets/logo-no-background.svg")"
+    MenuData="_menuData" Title="WM Solutions" SiderWidth="220">
     <RightContentRender>
         <Water_Meter2.Components.RightContent />
     </RightContentRender>
@@ -11,7 +10,7 @@
         @Body
     </ChildContent>
     <FooterRender>
-        <FooterView Copyright="2021 Ant Design Blazor" Links="Links"></FooterView>
+        <FooterView Copyright="WM Solutions" @*Links="Links"*@></FooterView>
     </FooterRender>
 </AntDesign.ProLayout.BasicLayout>
 <SettingDrawer />
