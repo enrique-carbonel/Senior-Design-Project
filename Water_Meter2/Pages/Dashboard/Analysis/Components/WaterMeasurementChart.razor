@@ -11,7 +11,7 @@
                         <ChildContent>
                             <DatePicker TValue="DateTime?" Picker="@DatePickerType.Week"  OnChange="GetWeeklyData"  />
                             <br />
-                            Content of Tab Pane 1 <br />
+                             <br />
                             @StartDate -- @EndDate
                             <br />
                             <AntDesign.Charts.Column @ref="_waterChart" Config="_WaterChartConfig" />
@@ -22,17 +22,14 @@
                         <ChildContent>
                             <DatePicker TValue="DateTime?" Picker="@DatePickerType.Year" OnChange="GetMonthlyData" />
                             <br />
-                            Content of Tab Pane 2 <br />
+                             <br />
                             @StartDate -- @EndDate
                             <br />
                             <AntDesign.Charts.Column @ref="_waterChart" Config="_WaterChartConfig" />
                             
                         </ChildContent>
                     </TabPane>
-                    <TabPane Key="3">
-                        <TabTemplate>Year</TabTemplate>
-                        <ChildContent>Content of Tab Pane 3</ChildContent>
-                    </TabPane>
+                   
                 </ChildContent>
             </Tabs>
         </div>
