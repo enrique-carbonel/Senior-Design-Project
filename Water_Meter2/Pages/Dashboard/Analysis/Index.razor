@@ -1,59 +1,68 @@
 @namespace Water_Meter2.Pages.Dashboard.Analysis
 @page "/"
 
+
 <GridContent>
   <CascadingValue Value="@Year">
     <Row Type="flex" Gutter="24">
-        <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
-            <ChartCard Title="Tips to Save Water"
-                       ContentHeight="70">
-                <ChildContent>
-                        <div>
-                            <Carousel Autoplay="TimeSpan.FromSeconds(10)">
-                                <CarouselSlick>
-                                    <h3>Water in the morning. Between dawn and mid morning is best, 
-                                        as the sun and wind will be lower, decreasing loss of water to evaporation.</h3>
-                                </CarouselSlick>
-                                <CarouselSlick>
-                                    <h3>In order to meet the very different watering needs each of your landscape elements,
-                                        divide your landscape into watering zones.</h3>
-                                </CarouselSlick>
-                                <CarouselSlick>
-                                    <h3>Water more frequently but in shorter bursts. For example, 
-                                        instead of one long watering session, 
-                                        try several short sessions timed about 15 minutes apart.</h3>
-                                </CarouselSlick>
-                                <CarouselSlick>
-                                    <h3>Don’t Water In The Rain</h3>
-                                </CarouselSlick>
-                            </Carousel>
-                        </div>
-                </ChildContent>
-            </ChartCard>
-        </AntDesign.Col>
-        <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
-            <ChartCard Title="Total Cost"
-                       ContentHeight="46">
-                <ChildContent>
-                    <MiniWaterCostChart />
-                </ChildContent>
-                <Footer>
-                    <Field Label="Currency" Value="USD" />
-                    <Field Label="(Approximate values)" />
-                </Footer>
-            </ChartCard>
-        </AntDesign.Col>
-        <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
-            <ChartCard Title=' "Possible Leakage" Detector'
-                       ContentHeight="46">
-                <ChildContent>
-             
-                </ChildContent>
-                <Footer>
-                    <Field Label="Will detect if there is Leakage based on ____"/>
-                </Footer>
-            </ChartCard>
-        </AntDesign.Col>
+      <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
+        <ChartCard Title="Tips to Save Water"
+                   ContentHeight="70">
+          <ChildContent>
+            <div>
+              <Carousel Autoplay="TimeSpan.FromSeconds(10)">
+                <CarouselSlick>
+                  <h3>
+                    Water in the morning. Between dawn and mid morning is best,
+                    as the sun and wind will be lower, decreasing loss of water to evaporation.
+                  </h3>
+                </CarouselSlick>
+                <CarouselSlick>
+                  <h3>
+                    In order to meet the very different watering needs each of your landscape elements,
+                    divide your landscape into watering zones.
+                  </h3>
+                </CarouselSlick>
+                <CarouselSlick>
+                  <h3>
+                    Water more frequently but in shorter bursts. For example,
+                    instead of one long watering session,
+                    try several short sessions timed about 15 minutes apart.
+                  </h3>
+                </CarouselSlick>
+                <CarouselSlick>
+                  <h3>Don’t Water In The Rain</h3>
+                </CarouselSlick>
+              </Carousel>
+            </div>
+          </ChildContent>
+        </ChartCard>
+      </AntDesign.Col>
+      <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
+        <ChartCard Title="Total Cost"
+                   ContentHeight="46">
+          <ChildContent>
+            <MiniWaterCostChart />
+          </ChildContent>
+          <Footer>
+            <Field Label="Currency" Value="USD" />
+            <Field Label="(Approximate values)" />
+          </Footer>
+        </ChartCard>
+      </AntDesign.Col>
+      <AntDesign.Col Xs="24" Sm="8" Md="8" Lg="8" Xl="8" Style="margin-bottom: 24px;">
+        <ChartCard Title=' "Possible Leakage" Detector'
+                   ContentHeight="46">
+          <ChildContent>
+
+          </ChildContent>
+          <Footer>
+            <Field Label="Will detect if there is Leakage based on " />            
+            <Field Label="@TimingScheduleMessage" />
+            <Field Label="@TimingScheduleStartMessage" />
+          </Footer>
+        </ChartCard>
+      </AntDesign.Col>
     </Row>
     <WaterMeasurementChart OnChangeYear="OnChangeYear" />
   </CascadingValue>
@@ -63,29 +72,103 @@
 
 
 <style>
-    .ant-carousel .slick-slide {
-        text-align: center;
-        
-    }
+  .ant-carousel .slick-slide {
+    text-align: center;
+  }
 
-        .ant-carousel .slick-slide h3 {
-            color: black;
-        }
+    .ant-carousel .slick-slide h3 {
+      color: black;
+    }
 </style>
 @code
 {
   private string _position = CarouselDotPosition.Bottom;
+  private string TimingScheduleMessage;
+  private string TimingScheduleStartMessage;
+  private TimeOnly LeakageStartTime;
+  private TimeOnly LeakageEndTime;
+  private DateTime CurrentDateTime;
+  private DateTime LeakageStartDateTime;
+  private DateTime LeakageEndDateTime;
+  ChartDataItem[] Dailydata;
+
+  [Inject]
+  IConfiguration Configuration { set; get; }
+
+  [Inject]
+  public IWaterChartService WaterChartService { get; set; }
+
+  PeriodicTimer StartLeakageTimer;
+
   int Year;
 
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
     Year = DateTime.Now.Year;
-
+    if (!TimeOnly.TryParse(Configuration["LeakageStartTime"], out LeakageStartTime))
+    {
+      LeakageStartTime = TimeOnly.Parse("15:00");
+    }
+    if (!TimeOnly.TryParse(Configuration["LeakageEndTime"], out LeakageEndTime))
+    {
+      LeakageEndTime = TimeOnly.Parse("17:00");
+    }
+    if (LeakageEndTime.CompareTo(LeakageStartTime) <= 0)
+    {
+      LeakageEndTime = LeakageStartTime.AddHours(2);
+    }
+    TimingScheduleMessage = $"Checking possible leakage between {LeakageStartTime.ToString()} - {LeakageEndTime.ToString()}";
+    CurrentDateTime = DateTime.Now;
+    LeakageStartDateTime = DateTime.Now.Date.AddTicks(LeakageStartTime.Ticks);
+    LeakageEndDateTime = DateTime.Now.Date.AddTicks(LeakageEndTime.Ticks);
+    if (CurrentDateTime.CompareTo(LeakageStartDateTime) >= 0 && CurrentDateTime.CompareTo(LeakageEndDateTime) <= 0)
+    {
+      //TimingScheduleStartMessage = "Checking Leakage from Database at this moment !!!!";
+      //Iniciar Medicion de la Base de Datos
+      CheckLeakage();
+    }
+    else
+    {
+      if (CurrentDateTime.CompareTo(LeakageStartDateTime) >= 0)
+      {
+        LeakageStartDateTime = LeakageStartDateTime.AddDays(1);
+        LeakageEndDateTime = LeakageEndDateTime.AddDays(1);
+      }
+      StartLeakageTimer = new PeriodicTimer(LeakageStartDateTime.Subtract(CurrentDateTime));
+      //TimingScheduleStartMessage = $"Checking Leakage from Database in {LeakageStartDateTime.Subtract(CurrentDateTime).Hours} hours {LeakageStartDateTime.Subtract(CurrentDateTime).Minutes} minutes {LeakageStartDateTime.Subtract(CurrentDateTime).Seconds} seconds";
+      while (await StartLeakageTimer.WaitForNextTickAsync())
+      {
+        //TimingScheduleStartMessage = "Checking Leakage from Database at this moment, time has elapsed";
+        StateHasChanged();
+        StartLeakageTimer.Dispose();
+        //Iniciar Medicion de la Base de Datos
+        CheckLeakage();
+      }
+    }
   }
 
   void OnChangeYear(int year)
   {
     Year = year;
+  }
+
+  async void CheckLeakage()
+  {
+    CancellationTokenSource cancellationToken = new CancellationTokenSource(LeakageEndDateTime.Subtract(LeakageStartDateTime));
+    StartLeakageTimer = new PeriodicTimer(new TimeSpan(0, 0, 5));
+    while (await StartLeakageTimer.WaitForNextTickAsync(cancellationToken.Token))
+    {
+      Dailydata = await WaterChartService.GetDailyMeasurementDataAsync(LeakageStartDateTime, LeakageEndDateTime);
+      if (Dailydata.Length == 0)
+      {
+        TimingScheduleStartMessage = $"No Leakage Detected. Checking Leakage from Database at {DateTime.Now.ToString("HH:mm:ss")}";
+      }
+      else
+      {
+        TimingScheduleStartMessage = $"Possible Leakage Detected. Checking Leakage from Database at {DateTime.Now.ToString("HH:mm:ss")}";
+      }
+      StateHasChanged();
+    }
   }
 }

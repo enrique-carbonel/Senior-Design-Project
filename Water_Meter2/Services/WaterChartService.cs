@@ -14,6 +14,7 @@ namespace Water_Meter2.Services
 {
   public interface IWaterChartService
   {
+    Task<ChartDataItem[]> GetDailyMeasurementDataAsync(DateTime StartDate, DateTime EndDate);
     Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate, DateTime EndDate);
     Task<ChartDataItem[]> GetMonthlyMeasurementDataAsync(DateTime StartDate, DateTime EndDate);
     Task<ChartDataItem[]> GetMonthlyCostDataAsync(DateTime StartDate, DateTime EndDate);
@@ -45,6 +46,28 @@ namespace Water_Meter2.Services
       WaterCost.Add(20001, 5.669);
     }
 
+    public async Task<ChartDataItem[]> GetDailyMeasurementDataAsync(DateTime StartDate, DateTime EndDate)
+    {
+      String Uri;
+      List<Measurement> measurements = new List<Measurement>();
+      ChartDataItem[] data;
+
+      Uri = $"/Measurement/GetMeasurementByDate?StartDate={StartDate:yyyy-MM-ddTHH:mm}&EndDate={EndDate:yyyy-MM-ddTHH:mm}";
+      //Fecha en yyyy-MM-dd
+      try
+      {
+        measurements = await _waterMeterAPIService.GetFromJsonAsync<List<Measurement>>(Uri, _jsonSerializerOptions);
+      }
+      catch (Exception ex)
+      {
+        var message = ex.Message;
+      }
+
+
+      data = measurements.Select(g => new ChartDataItem { X = g.TimeStamp.ToString("yyyy/MM/dd HH:mm"), Y = (int)Math.Round(g.Liters) })
+                         .ToArray();      
+      return (data);
+    }
     public async Task<ChartDataItem[]> GetWeeklyMeasurementDataAsync(DateTime StartDate, DateTime EndDate)
     {
       String Uri;
